@@ -1,23 +1,28 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import axios from 'axios';
 
 function App() {
+
+  const [selectFile, setSelectFile] = useState(null);
+
+  const fileSelectHandler = (event) => {
+    setSelectFile(event.target.files[0]);
+  }
+
+  const fileUploadHandler = (event) => {
+    // need to set up a firebase
+    axios.post('https://somefirebaseendpoint', selectFile, {
+      onUploadProgress: progressEvent => {
+        console.log(progressEvent.loaded / progressEvent.total)
+      }
+    })
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="file" onChange={fileSelectHandler} />
+      <button onClick={fileUploadHandler} >upload</button>
     </div>
   );
 }
